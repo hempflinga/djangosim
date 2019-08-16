@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Practice setting up Django!</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="shortcut icon" type="image/x-icon" href="https://d1.awsstatic.com/Marketplace/appdev/django.c1d2a620c54406bd960088015f40219bb163e7ab.png" alt="Favicon">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+		<style>
+			
+			
+		</style>
+	</head>
+	<body>
+		<div class="container-fluid">
+		<div class="jumbotron">
+			<a href="index.html"><i class="fa fa-caret-left pr-2"></i>Main</a>
+		</div>
+		<div class="row">
+			<div class="col-8">
+			
+				<div class="form-group">
+					<label id="terminalOutput1lbl" for="terminalOutput1">In <code>Terminal</code>:</label>
+					<textarea class="form-control" rows="10" id="terminalOutput1"></textarea>
+				</div>
+				
+				<div class="form-group">
+					<label id="pythonOutput1lbl" for="pythonOutput1"></label>
+					<div class="input-group col-6">
+						<input class="form-control form-control-sm" id="pythonOutput1">
+						<div class="input-group-append">
+							<span class="input-group-text"> to 'INSTALLED_APPS'</span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label id="pythonOutput2lbl" for="pythonOutput2"></label>
+					<textarea class="form-control" rows="20" id="pythonOutput2"></textarea>
+				</div>
+				<div class="form-group">
+					<label id="terminalOutput2lbl" for="terminalOutput2"></label>
+					<textarea class="form-control" id="terminalOutput2"></textarea>
+				</div>
+				<div class="form-group">
+					<label id="pythonOutput3lbl" for="pythonOutput3"></label>
+					<textarea class="form-control" id="pythonOutput3"></textarea>
+				</div>
+				<div class="form-group">
+					<label id="terminalOutput4lbl" for="terminalOutput4"></label>
+					<div class="input-group col-6">
+						<input class="form-control form-control-sm" id="terminalOutput4">
+					</div>
+				</div>
+				
+			</div>
+			<div class="col-4">
+				<form id="terminalInput1">
+					<div class="form-group">
+						<label for="dirName">Directory Location</label>
+						<input class="form-control" id="dirLoc" name="dirLoc" >
+					</div>
+					<div class="form-group">
+						<label for="dirName">Directory Name</label>
+						<input class="form-control" id="dirName" name="dirName" >
+					</div>
+					<div class="form-group">
+						<label for="dirName">Virtual Environment Name</label>
+						<input class="form-control" id="venvName" name="venvName" >
+					</div>
+					<div class="form-group">
+						<label for="dirName">Project Name</label>
+						<input class="form-control" id="projName" name="projName" >
+					</div>
+					<div class="form-group">
+						<label for="dirName">App Name</label>
+						<input class="form-control" id="appName" name="appName" >
+					</div>
+				</form>
+			</div>
+		</div>
+			
+		</div>
+		
+		
+		<script>
+			$(function(){
+				$('#terminalInput1').keyup(function(e){
+					e.preventDefault()
+					$(this).trigger('change')
+				});
+				var pyIndent = '&nbsp;&nbsp;&nbsp;&nbsp;'
+				$('#terminalInput1').change(function(e){
+					e.preventDefault()
+					var dl = $('#dirLoc').val();
+					var dn = ($('#dirName').val() == '') ? 'djangodirectory' : $('#dirName').val();
+					var vn = ($('#venvName').val() == '') ? 'myvenv' : $('#venvName').val();
+					var pn = ($('#projName').val() == '') ? 'project' : $('#projName').val();
+					var an = ($('#appName').val() == '') ? 'app' : $('#appName').val();
+					
+					var output1 = 'cd '+dl+'\nmkdir '+dn+'\npython3 -m venv '+vn+'\nsource '+vn+'/bin/activate\npython -m pip install --upgrade pip\npip install Django==2.2.4\ndjango-admin startproject '+pn+' .\npython manage.py migrate\npython manage.py startapp '+an;
+					
+					var output2 = "from django.conf import settings\nfrom django.db import models\nfrom django.utils import timezone\n\nclass Post(models.Model):\n"+pyIndent+"author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)\n"+pyIndent+"title = models.CharField(max_length=200)\n"+pyIndent+"text = models.TextField()\n"+pyIndent+"created_date = models.DateTimeField(default=timezone.now)\n"+pyIndent+"published_date = models.DateTimeField(blank=True, null=True)\n\n"+pyIndent+"def publish(self):\n"+pyIndent+pyIndent+"self.published_date = timezone.now()\n"+pyIndent+pyIndent+"self.save()\n\n"+pyIndent+" def __str__(self):\n"+pyIndent+pyIndent+"return self.title\n";
+
+					$('#terminalOutput1').html(output1)
+					
+					$('#pythonOutput1lbl').html("In <code>"+dl+"/"+dn+"/"+pn+"/settings.py, </code>add:");
+					$('#pythonOutput1').val("'"+an+"',")
+					
+					
+					$('#pythonOutput2lbl').html("In <code>"+dl+"/"+dn+"/"+an+"/models.py</code>:\n");
+					$('#pythonOutput2').html(output2)
+					
+					$('#terminalOutput2lbl').html("Back to <code>Terminal</code>");
+					$('#terminalOutput2').html('python manage.py makemigrations '+an+'\npython manage.py migrate '+an)
+					
+					$('#pythonOutput3lbl').html("In <code>"+dl+"/"+dn+"/"+an+"/admin.py</code>:\n");
+					$('#pythonOutput3').html("from django.contrib import admin\nfrom .models import Post\n\nadmin.site.register(Post)")
+					
+					$('#terminalOutput4lbl').html("Back to <code>Terminal</code>");
+					$('#terminalOutput4').val('python manage.py createsuperuser')
+				});
+			});
+		</script>
+	</body>
+</html>
+
+
+
+
+
+
+

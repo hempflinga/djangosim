@@ -4,21 +4,44 @@
 		<meta charset="utf-8">
 		<title>Practice setting up Django!</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<link rel="shortcut icon" type="image/x-icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon-32x32.png" alt="Favicon">
+		<link rel="shortcut icon" type="image/x-icon" href="https://d1.awsstatic.com/Marketplace/appdev/django.c1d2a620c54406bd960088015f40219bb163e7ab.png" alt="Favicon">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 		<style>
-			#testCode {
-				width: 100%;
-				margin: 0;
-				padding: 0;
-			}
 			
-			#fillableCode {
+			.codefill {
 				width: 100%;
 				margin: 0;
 				padding: 0;
 				border: 0;
+				font-size: 14px;
+				line-height: 14px;
+				font-family: monospace;
+				background-color: rgba(0,0,0,0);
+				color: rgba(23,175,200,1.00);
+			}
+			
+			.pretext {
+				margin: 0;
+				padding: 0;
+				border: 0;
+				font-size: 14px;
+				line-height: 14px;
+				background-color: rgba(0,0,0,0);
+				color: rgba(23,175,200,1.00);
+			}
+			
+			table {
+				width: 100%;
+			}
+			p {
+				width: 100%;
+				margin: 0;
+				padding: 0;
+				border: 0;
+				font-size: 14px;
+				line-height: 14px;
+				height: 22px;
 			}
 			
 			#fillableCode::after {
@@ -28,21 +51,82 @@
 			textarea:focus, input:focus{
 				outline: none;
 			}
+			
+			.output {
+				width: 100%;
+				margin: 0;
+				padding: 0;
+				border: 0;
+				background-color: rgba(0,0,0,0);
+				color: rgba(23,175,200,1.00);
+			}
+			
+			.codebg {
+				background-color: rgba(31,31,31,1.00);
+			}
+			
 		</style>
 	</head>
 	<body>
-		<div class="container-fluid">
-		<div class="row">
-			<div class="col-lg-3 col-md-3">
-			</div>
-			<div class="col-lg-9 col-md-9">
-			<pre><code id="testCode"></code></pre>
-			<textarea id="fillableCode">$</textarea>
-			</div>
+		<div class="container">
+		<div class="jumbotron">
+			<a href="quicksetup.html">Quick Setup</a>
 		</div>
+		
+		<div class="accordion" id="accordionDjango">
+		
+		</div>
+		<div class="my-5">Next steps: <a href="https://tutorial.djangogirls.org/en/deploy/">https://tutorial.djangogirls.org/en/deploy/</a></div>
 		</div>
 		<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+		
+		<script>
+			var indent = '&nbsp;&nbsp;&nbsp;&nbsp;';
+			var dblIndent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+			var steps = [
+			'Create django directory|cd desktop<br>mkdir djangogirls',
+			'Create virtual environment|python3 -m venv myvenv',
+			'Activate virtual environment|source myvenv/bin/activate',
+			'Install Django in Virtual environment|python -m pip install --upgrade pip<br>pip install Django==2.2.2<br>(OR pip install Django)',
+			'Create Project|django-admin startproject mysite .',
+			'Change settings|in settings.py:<br>TIME_ZONE = \'America/Chicago\'<br>ALLOWED_HOSTS = [\'127.0.0.1\', \'.pythonanywhere.com\']<br>STATIC_ROOT = os.path.join(BASE_DIR, \'static\')<br>(below STATIC_URL)',
+			'Create database|python manage.py migrate',
+			'Start Server|python manage.py runserver<br><a href="http://127.0.0.1:8000/">0.0.0.0:8080</a><br><br>CTRL+C to close.',
+			'Create application|python manage.py startapp blog',
+			'Add app to settings|in settings.py:<br>add \'blog\' to \'INSTALLED_APPS\'',
+			'Create a blog post model|Look in this <a href="https://tutorial.djangogirls.org/en/django_models/">tutorial</a>. In blog/models.py<br><br><br>from django.conf import settings<br>from django.db import models<br>from django.utils import timezone<br><br><br>class Post(models.Model):<br>' + indent + 'author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)<br>' + indent + 'title = models.CharField(max_length=200)<br>' + indent + 'text = models.TextField()<br>' + indent + 'created_date = models.DateTimeField(default=timezone.now)<br>' + indent + 'published_date = models.DateTimeField(blank=True, null=True)<br><br>' + indent + 'def publish(self):<br>' + dblIndent + 'self.published_date = timezone.now()<br>' + dblIndent + 'self.save()<br><br>' + indent + 'def __str__(self):<br>' + dblIndent + 'return self.title',
+			'Create tables for models|python manage.py makemigrations blog<br>python manage.py migrate blog',
+			'Django Admin|In blog/admin.py<br><br>from django.contrib import admin<br>from .models import Post<br><br>admin.site.register(Post)',
+			'Create Superuser|Start the server<br><br>python manage.py createsuperuse<br><br>Username: ***<br>Email address: ***@example.com<br>Password:<br>Password (again):<br>Go to <a href="http://127.0.0.1:8000/admin/">http://127.0.0.1:8000/admin/</a><br><br>Log in using superuser credentials<br>create a few blog posts',
+			];
+
+			
+			
+			
+			for (i=0;i<steps.length;i++){
+				var card = '%3Cdiv%20class%3D%22card%20djangoStep%22%3E%0A%09%3Cdiv%20class%3D%22card-header%22%20id%3D%22###HEADINGID###%22%20data-toggle%3D%22collapse%22%20data-target%3D%22%23###COLLAPSEID###%22%20aria-expanded%3D%22true%22%20aria-controls%3D%22###COLLAPSEID###%22%20style%3D%22cursor%3A%20pointer%3B%22%3E%0A%09%09%3Ch5%20class%3D%22mb-0%22%3E%0A%09%09%09%3Cbutton%20class%3D%22btn%20btn-link%22%20type%3D%22button%22%20%3E%0A%09%09%09###COLLAPSETITLE###%0A%09%09%09%3C%2Fbutton%3E%0A%09%09%3C%2Fh5%3E%0A%09%3C%2Fdiv%3E%0A%09%3Cdiv%20id%3D%22###COLLAPSEID###%22%20class%3D%22collapse%22%20aria-labelledby%3D%22###HEADINGID###%22%20data-parent%3D%22%23accordionDjango%22%3E%0A%09%09%3Cdiv%20class%3D%22card-body%22%3E%0A%09%09%09###COLLAPSEONTENT###%0A%09%09%3C%2Fdiv%3E%0A%09%3C%2Fdiv%3E%0A%3C%2Fdiv%3E';
+				
+				card = card.replace(/###HEADINGID###/g,'heading' + i);
+				card = card.replace(/###COLLAPSEID###/g,'collapse' + i);
+				card = card.replace(/###COLLAPSETITLE###/g,steps[i].split('|')[0]);
+				card = card.replace(/###COLLAPSEONTENT###/g,steps[i].split('|')[1]);
+				
+				console.log(steps[i].split(';')[0])
+				
+				$('#accordionDjango').append(decodeURIComponent(card))
+			}
+			
+			
+			
+		</script>
 	</body>
 </html>
+
+
+
+
+
+
+
